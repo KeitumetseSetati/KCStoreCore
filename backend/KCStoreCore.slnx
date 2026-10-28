@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="KCStoreCore.Application/KCStoreCore.Application.csproj" Id="d043d57c-f58d-45c2-9654-ae22a70a48e3" />
+  <Project Path="KCStoreCore.Domain/KCStoreCore.Domain.csproj" Id="bab075cc-2436-47ea-960c-da59fe7eafe3" />
+  <Project Path="KCStoreCore.Infrastructure/KCStoreCore.Infrastructure.csproj" Id="4f3395ab-e89e-4e34-aa88-85b51cb94acc" />
+  <Project Path="KCStoreCore/KCStoreCore.csproj" />
+</Solution>
