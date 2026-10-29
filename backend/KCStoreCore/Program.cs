@@ -1,35 +1,27 @@
+using KCStoreCore.Application.Interfaces;
 using KCStoreCore.Infrastructure.Persistence;
+using KCStoreCore.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Register API controllers.
 builder.Services.AddControllers();
 
-// Configure OpenAPI documentation.
+// Register OpenAPI documentation.
 builder.Services.AddOpenApi();
 
-// Retrieve the SQL Server connection string.
-var connectionString = builder.Configuration.GetConnectionString(
-    "DefaultConnection"
-);
-
-if (string.IsNullOrWhiteSpace(connectionString))
-{
-    throw new InvalidOperationException(
-        "The database connection string 'DefaultConnection' was not found."
-    );
-}
-
-// Register Entity Framework Core with SQL Server.
+// Register the SQL Server database context.
 builder.Services.AddDbContext<KCStoreCoreDbContext>(options =>
-{
-    options.UseSqlServer(connectionString);
-});
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register category management services.
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Enable OpenAPI documentation in development.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

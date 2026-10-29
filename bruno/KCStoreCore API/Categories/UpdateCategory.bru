@@ -1,0 +1,23 @@
+meta {
+  name: UpdateCategory
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/categories/{{categoryId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Electronics and Accessories",
+    "description": "Electronic devices, equipment and accessories",
+    "isActive": true
+  }
+}

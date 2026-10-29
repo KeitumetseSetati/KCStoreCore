@@ -1,0 +1,22 @@
+meta {
+  name: CreateCategory
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/categories
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Electronics",
+    "description": "Electronic devices and accessories"
+  }
+}
