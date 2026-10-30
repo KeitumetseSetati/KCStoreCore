@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace KCStoreCore.Tests.Integration;
 
+[Collection("SQL Server Integration")]
 public sealed class UserRolePersistenceTests
 {
     [Fact]
