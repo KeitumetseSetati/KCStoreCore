@@ -1,9 +1,13 @@
 ﻿using KCStoreCore.Domain.Entities;
+using KCStoreCore.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace KCStoreCore.Infrastructure.Persistence;
 
-public class KCStoreCoreDbContext : DbContext
+public class KCStoreCoreDbContext
+    : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
     public KCStoreCoreDbContext(
         DbContextOptions<KCStoreCoreDbContext> options)
@@ -43,7 +47,29 @@ public class KCStoreCoreDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Configure the ASP.NET Core Identity tables.
         base.OnModelCreating(modelBuilder);
+
+        // =====================================================
+        // APPLICATION USER
+        // =====================================================
+
+        modelBuilder.Entity<ApplicationUser>(entity =>
+        {
+            entity.Property(x => x.FirstName)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(x => x.LastName)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(x => x.IsActive)
+                .IsRequired();
+
+            entity.Property(x => x.CreatedAtUtc)
+                .IsRequired();
+        });
 
         // =====================================================
         // CATEGORY

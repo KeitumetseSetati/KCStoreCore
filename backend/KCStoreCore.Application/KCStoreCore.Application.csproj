@@ -10,4 +10,8 @@
     <ProjectReference Include="..\KCStoreCore.Domain\KCStoreCore.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Products\" />
+  </ItemGroup>
+
 </Project>

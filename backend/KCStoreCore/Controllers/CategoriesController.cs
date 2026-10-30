@@ -1,11 +1,14 @@
 ﻿using KCStoreCore.Application.DTOs.Categories;
 using KCStoreCore.Application.Interfaces;
+using KCStoreCore.Application.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KCStoreCore.Controllers;
 
 [ApiController]
 [Route("api/categories")]
+[Authorize(Policy = AuthorizationPolicies.InventoryAccess)]
 public class CategoriesController : ControllerBase
 {
     private readonly ICategoryService _categoryService;
@@ -14,6 +17,11 @@ public class CategoriesController : ControllerBase
     {
         _categoryService = categoryService;
     }
+
+    // =====================================================
+    // GET ALL CATEGORIES
+    // Administrator, Manager and Staff
+    // =====================================================
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<CategoryResponse>>> GetAll(
@@ -26,6 +34,11 @@ public class CategoriesController : ControllerBase
 
         return Ok(categories);
     }
+
+    // =====================================================
+    // GET CATEGORY BY ID
+    // Administrator, Manager and Staff
+    // =====================================================
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<CategoryResponse>> GetById(
@@ -47,7 +60,13 @@ public class CategoriesController : ControllerBase
         return Ok(category);
     }
 
+    // =====================================================
+    // CREATE CATEGORY
+    // Administrator and Manager only
+    // =====================================================
+
     [HttpPost]
+    [Authorize(Policy = AuthorizationPolicies.ManagementAccess)]
     public async Task<ActionResult<CategoryResponse>> Create(
         [FromBody] CreateCategoryRequest request,
         CancellationToken cancellationToken)
@@ -72,7 +91,13 @@ public class CategoriesController : ControllerBase
         }
     }
 
+    // =====================================================
+    // UPDATE CATEGORY
+    // Administrator and Manager only
+    // =====================================================
+
     [HttpPut("{id:guid}")]
+    [Authorize(Policy = AuthorizationPolicies.ManagementAccess)]
     public async Task<ActionResult<CategoryResponse>> Update(
         Guid id,
         [FromBody] UpdateCategoryRequest request,
@@ -104,7 +129,13 @@ public class CategoriesController : ControllerBase
         }
     }
 
+    // =====================================================
+    // DEACTIVATE CATEGORY
+    // Administrator and Manager only
+    // =====================================================
+
     [HttpPatch("{id:guid}/deactivate")]
+    [Authorize(Policy = AuthorizationPolicies.ManagementAccess)]
     public async Task<IActionResult> Deactivate(
         Guid id,
         CancellationToken cancellationToken)
