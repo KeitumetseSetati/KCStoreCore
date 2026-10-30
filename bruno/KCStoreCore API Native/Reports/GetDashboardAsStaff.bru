@@ -1,0 +1,29 @@
+meta {
+  name: GetDashboardAsStaff
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{localUrl}}/api/reports/dashboard
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{staffToken}}
+}
+
+vars:pre-request {
+  staffToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNDg3ZDZiMy1lYWJjLTRiODgtOGYzOC0wOGRmMzZkNzBiMGEiLCJqdGkiOiI0M2RiNTkwMi1kNjAzLTRhYTktYjdkMS0yNmVjYjBlNGI5ZWQiLCJlbWFpbCI6InN0YWZmdGVzdDA0MUBleGFtcGxlLmNvbSIsIm5hbWUiOiJzdGFmZnRlc3QwNDFAZXhhbXBsZS5jb20iLCJmaXJzdF9uYW1lIjoiVGVzdCIsImxhc3RfbmFtZSI6IlN0YWZmIiwicm9sZSI6IlN0YWZmIiwibmJmIjoxNzkzNDAyOTg4LCJleHAiOjE3OTM0MDM4ODgsImlzcyI6IktDU3RvcmVDb3JlLkFQSSIsImF1ZCI6IktDU3RvcmVDb3JlLkNsaWVudCJ9.RJuZOccqDJsMHkgPr93TxvLMJzynqrK27ebTrB7c2s8
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

@@ -1,0 +1,20 @@
+meta {
+  name: CancelPurchaseOrder
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{localUrl}}/api/purchase-orders/{{purchaseOrderId}}/cancel
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

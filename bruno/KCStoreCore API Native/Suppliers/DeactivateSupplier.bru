@@ -1,0 +1,22 @@
+meta {
+  name: DeactivateSupplier
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{localUrl}}/api/suppliers/{{supplierId}}/deactivate
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+  supplierId: 8ab8e63b-ff01-4dcd-8d6e-7da4af91aaa2
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

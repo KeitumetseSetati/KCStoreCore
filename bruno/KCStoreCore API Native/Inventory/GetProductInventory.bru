@@ -1,0 +1,27 @@
+meta {
+  name: GetProductInventory
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{localUrl}}/api/inventory/stores/{{storeId}}/products/{{productId}}
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+  storeId: 3572f45f-e13f-4ea4-86c2-686eea36a928
+  productId: f719a37e-67be-463e-9b8c-8a264d6edea4
+}
+
+assert {
+  res.status: eq 200
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

@@ -1,0 +1,49 @@
+meta {
+  name: LoginManager
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{localUrl}}/api/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "email": "{{managerEmail}}",
+    "password": "{{managerPassword}}"
+  }
+}
+
+vars:pre-request {
+  managerEmail: caesarlizec@gmail.com
+  managerPassword: VpexUEsPhDQcACLhRzg7!
+}
+
+script:post-response {
+  if (res.status === 200) {
+    const response = res.getBody();
+  
+    if (response && response.accessToken) {
+      bru.setVar("managerToken", response.accessToken);
+      console.log("Manager token captured successfully.");
+    } else {
+      console.log("Manager login succeeded, but no access token was found.");
+    }
+  } else {
+    console.log("Manager login failed. No token captured.");
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

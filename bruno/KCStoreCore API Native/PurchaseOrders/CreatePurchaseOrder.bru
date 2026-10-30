@@ -1,0 +1,53 @@
+meta {
+  name: CreatePurchaseOrder
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{localUrl}}/api/purchase-orders
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "orderNumber": "PO-2026-006",
+    "supplierId": "fe15db58-b194-4b07-871f-2e35d799f66a",
+    "storeId": "3572f45f-e13f-4ea4-86c2-686eea36a928",
+    "items": [
+      {
+        "productId": "f719a37e-67be-463e-9b8c-8a264d6edea4",
+        "quantityOrdered": 10,
+        "unitCost": 150.00
+      }
+    ]
+  }
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+  supplierId: fe15db58-b194-4b07-871f-2e35d799f66a
+  storeId: 3572f45f-e13f-4ea4-86c2-686eea36a928
+  productId: f719a37e-67be-463e-9b8c-8a264d6edea4
+}
+
+script:post-response {
+  if (res.status === 201) {
+    const body = res.getBody();
+  
+    if (body && body.id) {
+      bru.setVar("purchaseOrderId", body.id);
+      console.log("Saved purchaseOrderId:", body.id);
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

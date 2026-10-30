@@ -1,0 +1,15 @@
+meta {
+  name: GetProductById
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{localUrl}}/api/products/{{productId}}
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  productId: YOUR_PRODUCT_ID_HERE
+}

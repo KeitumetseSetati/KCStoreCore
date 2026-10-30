@@ -1,0 +1,29 @@
+meta {
+  name: GetAllUsersAsStaff
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{localUrl}}/api/users
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{staffToken}}
+}
+
+vars:pre-request {
+  staffToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNDg3ZDZiMy1lYWJjLTRiODgtOGYzOC0wOGRmMzZkNzBiMGEiLCJqdGkiOiJlNTgxZmYyZi0zYzc0LTRkNjktOTAwMy0yMDE4MTUxMzAwZWQiLCJlbWFpbCI6InN0YWZmdGVzdDA0MUBleGFtcGxlLmNvbSIsIm5hbWUiOiJzdGFmZnRlc3QwNDFAZXhhbXBsZS5jb20iLCJmaXJzdF9uYW1lIjoiVGVzdCIsImxhc3RfbmFtZSI6IlN0YWZmIiwicm9sZSI6IlN0YWZmIiwibmJmIjoxNzkzNDAwNzQ5LCJleHAiOjE3OTM0MDE2NDksImlzcyI6IktDU3RvcmVDb3JlLkFQSSIsImF1ZCI6IktDU3RvcmVDb3JlLkNsaWVudCJ9.CaKZ9toYoKMwxHzQN2oAIrDDGmYZgaFApYDJ6eRB5QY
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

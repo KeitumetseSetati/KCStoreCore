@@ -1,0 +1,26 @@
+
+meta {
+  name: GetAllUsers
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{localUrl}}/api/users
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+headers {
+  Accept: application/json
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

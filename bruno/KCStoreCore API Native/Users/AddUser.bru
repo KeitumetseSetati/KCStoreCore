@@ -1,0 +1,37 @@
+
+meta {
+  name: AddUser
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{localUrl}}/api/users
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "email": "newstaff@example.com",
+    "firstName": "Test",
+    "lastName": "Employee",
+    "password": "{{testStaffPassword}}",
+    "role": "Staff"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

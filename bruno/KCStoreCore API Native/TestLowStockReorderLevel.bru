@@ -1,0 +1,27 @@
+meta {
+  name: TestLowStockReorderLevel
+  type: http
+  seq: 10
+}
+
+put {
+  url: {{localUrl}}/api/inventory/stores/3572f45f-e13f-4ea4-86c2-686eea36a928/products/f719a37e-67be-463e-9b8c-8a264d6edea4/reorder-level
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "reorderLevel": 25
+  }
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

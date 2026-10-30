@@ -1,0 +1,19 @@
+meta {
+  name: GetAllCategories
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{localUrl}}/api/categories
+  body: none
+  auth: none
+}
+
+params:query {
+  ~includeInactive: false
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+}

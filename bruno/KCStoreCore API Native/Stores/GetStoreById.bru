@@ -1,0 +1,22 @@
+meta {
+  name: GetStoreById
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{localUrl}}/api/stores/{{storeId}}
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  storeId: 4efc4174-e123-4ab0-aa5a-9060790efbf0
+  localUrl: https://localhost:7280
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

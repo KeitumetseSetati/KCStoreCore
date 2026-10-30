@@ -1,0 +1,21 @@
+meta {
+  name: GetStockMovementReport
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{localUrl}}/api/reports/stock-movements
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

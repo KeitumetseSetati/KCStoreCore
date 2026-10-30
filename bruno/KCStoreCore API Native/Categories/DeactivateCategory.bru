@@ -1,0 +1,16 @@
+meta {
+  name: DeactivateCategory
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{localUrl}}/api/categories/{{categoryId}}/deactivate
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+  categoryId: 3c1bae6b-4e8f-40fb-8ca0-24961d475914
+}

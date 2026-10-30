@@ -1,0 +1,15 @@
+meta {
+  name: DeactivateProduct
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{localUrl}}/api/products/{{productId}}/deactivate
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  productId: YOUR_PRODUCT_ID_HERE
+}

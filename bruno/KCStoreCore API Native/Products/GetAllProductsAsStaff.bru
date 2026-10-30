@@ -1,0 +1,29 @@
+meta {
+  name: GetAllProductsAsStaff
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{localUrl}}/api/products
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{staffToken}}
+}
+
+vars:pre-request {
+  staffToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNDg3ZDZiMy1lYWJjLTRiODgtOGYzOC0wOGRmMzZkNzBiMGEiLCJqdGkiOiJmYjYwYmZjNS04MzA0LTQ1NDEtYTFiNS0zZGZhM2QzMjljNGQiLCJlbWFpbCI6InN0YWZmdGVzdDA0MUBleGFtcGxlLmNvbSIsIm5hbWUiOiJzdGFmZnRlc3QwNDFAZXhhbXBsZS5jb20iLCJmaXJzdF9uYW1lIjoiVGVzdCIsImxhc3RfbmFtZSI6IlN0YWZmIiwicm9sZSI6IlN0YWZmIiwibmJmIjoxNzkzNDAyMzk4LCJleHAiOjE3OTM0MDMyOTgsImlzcyI6IktDU3RvcmVDb3JlLkFQSSIsImF1ZCI6IktDU3RvcmVDb3JlLkNsaWVudCJ9.6gWqop487ckALq--kWY9zFDlkAgn7kGR-8nPmzgP8zs
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

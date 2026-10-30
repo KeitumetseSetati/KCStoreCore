@@ -1,0 +1,22 @@
+meta {
+  name: DeactivateStore
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{localUrl}}/api/stores/{{storeId}}/deactivate
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+  storeId: 4efc4174-e123-4ab0-aa5a-9060790efbf0
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

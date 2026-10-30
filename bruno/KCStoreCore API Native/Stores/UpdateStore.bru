@@ -1,0 +1,32 @@
+meta {
+  name: UpdateStore
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{localUrl}}/api/stores/{{storeId}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "code": "STR-001",
+      "name": "KCStoreCore Pretoria Central",
+      "address": "456 Church Street",
+      "city": "Pretoria",
+      "isActive": true
+    }
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+  storeId: 4efc4174-e123-4ab0-aa5a-9060790efbf0
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

@@ -1,0 +1,16 @@
+meta {
+  name: GetProductById
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{localUrl}}/api/products/{{productId}}
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  productId: f719a37e-67be-463e-9b8c-8a264d6edea4
+  localUrl: https://localhost:7280
+}

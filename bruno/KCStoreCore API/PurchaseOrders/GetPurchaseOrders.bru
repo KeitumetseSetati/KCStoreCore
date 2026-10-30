@@ -1,0 +1,16 @@
+meta {
+  name: GetPurchaseOrders
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{localUrl}}/api/purchase-orders
+  body: none
+  auth: none
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

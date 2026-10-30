@@ -1,0 +1,26 @@
+meta {
+  name: GetUserById
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{localUrl}}/api/users/{{userId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3MTQ1YTUzMi02NzkxLTRmNDYtOTlkYS1mNzMwZDZhOGExMWMiLCJqdGkiOiJlMDBkYWY4MS01ZGU5LTQ1ZDEtODgyYy1mYTZlOGE5MTE2ZWEiLCJlbWFpbCI6ImtlaXR1bWV0c2VjZXppbDE2QGdtYWlsLmNvbSIsIm5hbWUiOiJrZWl0dW1ldHNlY2V6aWwxNkBnbWFpbC5jb20iLCJmaXJzdF9uYW1lIjoiS2VpdHVtZXRzZSIsImxhc3RfbmFtZSI6IlNldGF0aSIsInJvbGUiOiJBZG1pbmlzdHJhdG9yIiwibmJmIjoxNzkzMzkxNzU3LCJleHAiOjE3OTMzOTI2NTcsImlzcyI6IktDU3RvcmVDb3JlLkFQSSIsImF1ZCI6IktDU3RvcmVDb3JlLkNsaWVudCJ9.dG5p05Z4Cj21w9voyF76kttqnPZe9arK7_4Y05QxKxo
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+  userId: 7145a532-6791-4f46-99da-f730d6a8a11c
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

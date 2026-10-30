@@ -1,0 +1,34 @@
+meta {
+  name: CreateStore
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{localUrl}}/api/stores
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "code": "STR-002",
+      "name": "KCStoreCore Pretoria",
+      "address": "123 Main Street",
+      "city": "Pretoria"
+    }
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

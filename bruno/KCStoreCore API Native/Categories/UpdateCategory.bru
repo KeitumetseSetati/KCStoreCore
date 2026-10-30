@@ -1,0 +1,28 @@
+meta {
+  name: UpdateCategory
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{localUrl}}/api/categories/{{categoryId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Electronics and Accessories",
+    "description": "Electronic devices, equipment and accessories",
+    "isActive": true
+  }
+}
+
+vars:pre-request {
+  categoryId: 3c1bae6b-4e8f-40fb-8ca0-24961d475914
+  localUrl: https://localhost:7280
+}

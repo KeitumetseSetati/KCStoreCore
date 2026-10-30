@@ -1,0 +1,26 @@
+
+meta {
+  name: GetAllProductsAsManager
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{localUrl}}/api/products
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{managerToken}}
+}
+
+headers {
+  Accept: application/json
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

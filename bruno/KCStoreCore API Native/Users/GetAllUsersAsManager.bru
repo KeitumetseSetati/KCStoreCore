@@ -1,0 +1,26 @@
+
+meta {
+  name: GetAllUsersAsManager
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{localUrl}}/api/users
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{managerToken}}
+}
+
+headers {
+  Accept: application/json
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

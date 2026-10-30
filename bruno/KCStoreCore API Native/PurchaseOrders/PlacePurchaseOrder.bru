@@ -1,0 +1,21 @@
+meta {
+  name: PlacePurchaseOrder
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{localUrl}}/api/purchase-orders/{{PurchaseOrderId}}/place
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+  PurchaseOrderId: 7060138c-f297-4b9d-bc9c-f7a5dd24d729
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

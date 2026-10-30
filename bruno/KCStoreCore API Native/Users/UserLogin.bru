@@ -1,0 +1,32 @@
+meta {
+  name: UserLogin
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{localUrl}}/api/auth/login
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: 
+}
+
+body:json {
+  {
+    "email": "stafftest021@example.com",
+    "password": "ManagerTest@2026Secure"
+  }
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

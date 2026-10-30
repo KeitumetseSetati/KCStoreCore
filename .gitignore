@@ -62,3 +62,5 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.bak
+# Bruno local environment configuration
+bruno/KCStoreCore API Native/environments/Local.bru

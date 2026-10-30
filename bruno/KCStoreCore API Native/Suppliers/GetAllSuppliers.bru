@@ -1,0 +1,21 @@
+meta {
+  name: GetAllSuppliers
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{localUrl}}/api/suppliers
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

@@ -1,0 +1,37 @@
+meta {
+  name: CreateStockReceipt
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{localUrl}}/api/stock-receipts
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "purchaseOrderId": "7060138c-f297-4b9d-bc9c-f7a5dd24d729",
+    "receiptNumber": "REC-2026-007",
+    "notes": "Testing receiving stock against a completed purchase order.",
+    "items": [
+      {
+        "purchaseOrderItemId": "39de9d34-2944-4b7a-ae97-535f219bbb0f",
+        "quantityReceived": 1
+      }
+    ]
+  }
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+  purchaseOrderItemId: 39de9d34-2944-4b7a-ae97-535f219bbb0f
+  PurchaseOrderId: 7060138c-f297-4b9d-bc9c-f7a5dd24d729
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

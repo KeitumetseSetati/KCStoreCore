@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "KCStoreCore API Native",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

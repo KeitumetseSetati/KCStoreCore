@@ -1,0 +1,26 @@
+meta {
+  name: CreateProduct
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{localUrl}}/api/products
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "sku": "ELEC-001",
+    "name": "Wireless Mouse",
+    "description": "Wireless optical mouse with USB receiver",
+    "categoryId": "3c1bae6b-4e8f-40fb-8ca0-24961d475914",
+    "unitPrice": 249.99,
+    "costPrice": 150.00
+  }
+}

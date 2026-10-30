@@ -1,0 +1,33 @@
+meta {
+  name: UpdateSupplier
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{localUrl}}/api/suppliers/{{supplierId}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "name": "TechSource Distributors SA",
+      "contactPerson": "John Smith",
+      "email": "support@techsource.example",
+      "phoneNumber": "0123456789",
+      "address": "200 Industrial Road, Pretoria",
+      "isActive": true
+    }
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+  supplierId: 8ab8e63b-ff01-4dcd-8d6e-7da4af91aaa2
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

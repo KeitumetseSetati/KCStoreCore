@@ -1,0 +1,22 @@
+meta {
+  name: GetStockReceiptById
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{localUrl}}/api/stock-receipts/{{stockReceiptId}}
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  localUrl: https://localhost:7280
+  stockReceiptId: 00000000-0000-0000-0000-000000000001
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}
