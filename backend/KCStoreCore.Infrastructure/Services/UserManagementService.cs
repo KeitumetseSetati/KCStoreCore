@@ -379,6 +379,13 @@ public sealed class UserManagementService : IUserManagementService
                 "The user was modified by another operation. " +
                 "Please refresh the user and try again.");
         }
+        catch (DbUpdateException exception)
+            when (ContainsSqlConcurrencyError(exception))
+        {
+            // A database update can wrap a SQL Server
+            // deadlock or another concurrency error.
+            return RoleUpdateConcurrencyFailure();
+        }
         catch (DbUpdateException)
         {
             // Avoid exposing database details to API clients.
@@ -387,21 +394,70 @@ public sealed class UserManagementService : IUserManagementService
                 "Please refresh the user and try again.");
         }
         catch (SqlException exception)
-            when (exception.Number == 1205 ||
-                  exception.Number == 1222 ||
-                  exception.Number == 3960)
+            when (IsSqlConcurrencyError(exception))
         {
-            // SQL Server concurrency-related errors:
-            //
-            // 1205: Deadlock victim
-            // 1222: Lock request timeout
-            // 3960: Snapshot update conflict
-            //
-            // The transaction is not committed.
-            return RoleUpdateFailure(
-                "The role update encountered a database " +
-                "concurrency conflict. Please try again.");
+            // Handle SQL Server concurrency errors thrown
+            // directly rather than wrapped by EF Core.
+            return RoleUpdateConcurrencyFailure();
         }
+        catch (InvalidOperationException exception)
+            when (ContainsSqlConcurrencyError(exception))
+        {
+            // EF Core's execution strategy can wrap a
+            // DbUpdateException containing a SqlException
+            // inside an InvalidOperationException.
+            //
+            // Only known SQL concurrency errors are handled.
+            // Unrelated InvalidOperationExceptions still propagate.
+            return RoleUpdateConcurrencyFailure();
+        }
+    }
+
+    // =====================================================
+    // SQL SERVER CONCURRENCY ERROR HELPERS
+    // =====================================================
+
+    private static bool IsSqlConcurrencyError(
+        SqlException exception)
+    {
+        // 1205: Deadlock victim
+        // 1222: Lock request timeout
+        // 3960: Snapshot update conflict
+        return exception.Errors
+            .Cast<SqlError>()
+            .Any(error =>
+                error.Number == 1205 ||
+                error.Number == 1222 ||
+                error.Number == 3960);
+    }
+
+    private static bool ContainsSqlConcurrencyError(
+        Exception exception)
+    {
+        // Inspect the entire inner-exception chain.
+        // EF Core may wrap SQL Server exceptions
+        // inside one or more other exception types.
+        for (Exception? current = exception;
+             current is not null;
+             current = current.InnerException)
+        {
+            if (current is SqlException sqlException &&
+                IsSqlConcurrencyError(sqlException))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static UserRoleUpdateResult RoleUpdateConcurrencyFailure()
+    {
+        // Return a controlled response without exposing
+        // SQL Server implementation details to clients.
+        return RoleUpdateFailure(
+            "The role update encountered a database " +
+            "concurrency conflict. Please try again.");
     }
 
     // =====================================================
