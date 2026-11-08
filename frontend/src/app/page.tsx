@@ -1,4 +1,4 @@
-
+﻿
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -29,6 +29,7 @@ import ProductsView from "@/components/products/products-view";
 import CategoriesView from "@/components/categories/categories-view";
 import {
   canAccessModule,
+  canManageInventory,
   type ModuleName,
 } from "@/lib/permissions";
 
@@ -54,6 +55,23 @@ type AuthenticationState =
   | "unavailable"
   | "signed-out";
 
+type DashboardSummary = {
+  totalProducts: number;
+  activeProducts: number;
+  totalStores: number;
+  activeStores: number;
+  totalSuppliers: number;
+  totalUnitsInStock: number;
+  totalInventoryValue: number;
+  lowStockItemCount: number;
+  pendingPurchaseOrders: number;
+  completedPurchaseOrders: number;
+  totalPurchaseOrders: number;
+  generatedAtUtc: string;
+};
+
+type DashboardLoadState = "loading" | "ready" | "error";
+
 const mainNavigation: NavigationItem[] = [
   { label: "Dashboard", icon: LayoutDashboard },
   { label: "Products", icon: Package },
@@ -69,33 +87,6 @@ const managementNavigation: NavigationItem[] = [
   { label: "Reports", icon: ChartColumn },
   { label: "Users", icon: Users },
   { label: "Settings", icon: Settings },
-];
-
-const stats = [
-  {
-    label: "Total Products",
-    value: "1,248",
-    icon: Package,
-    detail: "Sample product count",
-  },
-  {
-    label: "Inventory Units",
-    value: "24,580",
-    icon: Boxes,
-    detail: "Sample stock quantity",
-  },
-  {
-    label: "Low Stock Items",
-    value: "18",
-    icon: TriangleAlert,
-    detail: "Sample low-stock count",
-  },
-  {
-    label: "Purchase Orders",
-    value: "42",
-    icon: ClipboardList,
-    detail: "Sample order count",
-  },
 ];
 
 const sampleProducts = [
@@ -151,6 +142,43 @@ const sampleActivities = [
   },
 ];
 
+function isDashboardSummary(value: unknown): value is DashboardSummary {
+  if (
+    typeof value !== "object" ||
+    value === null ||
+    Array.isArray(value)
+  ) {
+    return false;
+  }
+
+  const summary = value as Record<string, unknown>;
+
+  const numericFields = [
+    "totalProducts",
+    "activeProducts",
+    "totalStores",
+    "activeStores",
+    "totalSuppliers",
+    "totalUnitsInStock",
+    "totalInventoryValue",
+    "lowStockItemCount",
+    "pendingPurchaseOrders",
+    "completedPurchaseOrders",
+    "totalPurchaseOrders",
+  ];
+
+  return (
+    numericFields.every(
+      (field) =>
+        typeof summary[field] === "number" &&
+        Number.isFinite(summary[field]) &&
+        (summary[field] as number) >= 0,
+    ) &&
+    typeof summary.generatedAtUtc === "string" &&
+    Number.isFinite(Date.parse(summary.generatedAtUtc))
+  );
+}
+
 function NavigationButton({
   item,
   active,
@@ -180,9 +208,132 @@ function NavigationButton({
 
 function DashboardContent({
   onNavigate,
+  userRoles,
 }: {
   onNavigate: (value: ModuleKey) => void;
+  userRoles: readonly string[];
 }) {
+  const router = useRouter();
+
+  const canViewReports = canManageInventory(userRoles);
+
+  const [summary, setSummary] =
+    useState<DashboardSummary | null>(null);
+
+  const [loadState, setLoadState] =
+    useState<DashboardLoadState>("loading");
+
+  const [loadError, setLoadError] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
+
+  useEffect(() => {
+    if (!canViewReports) {
+      return;
+    }
+
+    const controller = new AbortController();
+
+    async function loadDashboard() {
+      setLoadState("loading");
+      setLoadError("");
+
+      try {
+        const response = await fetch("/api/reports/dashboard", {
+          method: "GET",
+          credentials: "same-origin",
+          cache: "no-store",
+          signal: controller.signal,
+        });
+
+        if (controller.signal.aborted) {
+          return;
+        }
+
+        if (response.status === 401) {
+          router.replace("/login");
+          return;
+        }
+
+        if (!response.ok) {
+          const errorData = (await response.json().catch(
+            () => null,
+          )) as { message?: string } | null;
+
+          throw new Error(
+            errorData?.message ??
+              "Unable to load dashboard statistics.",
+          );
+        }
+
+        const data: unknown = await response.json();
+
+        if (!isDashboardSummary(data)) {
+          throw new Error(
+            "The dashboard returned invalid statistics.",
+          );
+        }
+
+        if (!controller.signal.aborted) {
+          setSummary(data);
+          setLoadState("ready");
+        }
+      } catch (error) {
+        if (controller.signal.aborted) {
+          return;
+        }
+
+        setSummary(null);
+
+        setLoadError(
+          error instanceof Error
+            ? error.message
+            : "Unable to load dashboard statistics.",
+        );
+
+        setLoadState("error");
+      }
+    }
+
+    void loadDashboard();
+
+    return () => controller.abort();
+  }, [canViewReports, retryCount, router]);
+
+  const stats: {
+    label: string;
+    value: number;
+    icon: LucideIcon;
+    detail: string;
+  }[] = summary
+    ? [
+        {
+          label: "Total Products",
+          value: summary.totalProducts,
+          icon: Package,
+          detail: `${summary.activeProducts.toLocaleString()} active products`,
+        },
+        {
+          label: "Inventory Units",
+          value: summary.totalUnitsInStock,
+          icon: Boxes,
+          detail: "Units across store inventories",
+        },
+        {
+          label: "Low Stock Items",
+          value: summary.lowStockItemCount,
+          icon: TriangleAlert,
+          detail:
+            "Store inventory records at reorder level or below",
+        },
+        {
+          label: "Purchase Orders",
+          value: summary.totalPurchaseOrders,
+          icon: ClipboardList,
+          detail: `${summary.pendingPurchaseOrders.toLocaleString()} pending orders`,
+        },
+      ]
+    : [];
+
   return (
     <>
       <div className="page-heading">
@@ -199,31 +350,100 @@ function DashboardContent({
           className="primary-button"
           onClick={() => onNavigate("Products")}
         >
-          View Products <ArrowRight size={16} aria-hidden="true" />
+          View Products
+          <ArrowRight size={16} aria-hidden="true" />
         </button>
       </div>
 
       <div className="demo-banner" role="note">
-        <strong>Frontend preview:</strong> The figures, products and
-        activities shown below are demonstration data. They are not
-        yet connected to the KCStoreCore backend or SQL Server
-        database.
+        <strong>Data sources:</strong> Dashboard statistics
+        are retrieved from the KCStoreCore backend for
+        authorized users. The inventory overview table and
+        recent activity below are demonstration data.
       </div>
 
-      <div className="stats-grid">
-        {stats.map((stat) => (
-          <div className="stat-card" key={stat.label}>
-            <div className="stat-top">
-              <span className="stat-label">{stat.label}</span>
-              <span className="stat-icon" aria-hidden="true">
-                <stat.icon size={20} strokeWidth={1.8} />
-              </span>
-            </div>
-            <div className="stat-value">{stat.value}</div>
-            <div className="stat-detail">{stat.detail}</div>
+      {!canViewReports ? (
+        <section className="panel" role="status">
+          <h2 className="panel-title">
+            Management statistics unavailable
+          </h2>
+          <p className="page-subtitle">
+            Your role does not permit access to management
+            reports. You can continue using your authorized
+            inventory modules.
+          </p>
+        </section>
+      ) : loadState === "loading" ? (
+        <section
+          className="panel"
+          role="status"
+          aria-live="polite"
+        >
+          Loading live dashboard statistics...
+        </section>
+      ) : loadState === "error" ? (
+        <section className="panel" role="alert">
+          <h2 className="panel-title">
+            Dashboard statistics unavailable
+          </h2>
+
+          <p className="page-subtitle">{loadError}</p>
+
+          <button
+            type="button"
+            className="primary-button"
+            style={{ marginTop: "16px" }}
+            onClick={() =>
+              setRetryCount((count) => count + 1)
+            }
+          >
+            Retry statistics
+          </button>
+        </section>
+      ) : (
+        <>
+          <div className="stats-grid">
+            {stats.map((stat) => (
+              <div className="stat-card" key={stat.label}>
+                <div className="stat-top">
+                  <span className="stat-label">
+                    {stat.label}
+                  </span>
+                  <span
+                    className="stat-icon"
+                    aria-hidden="true"
+                  >
+                    <stat.icon
+                      size={20}
+                      strokeWidth={1.8}
+                    />
+                  </span>
+                </div>
+
+                <div className="stat-value">
+                  {stat.value.toLocaleString()}
+                </div>
+
+                <div className="stat-detail">
+                  {stat.detail}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+
+          {summary && (
+            <p
+              className="page-subtitle"
+              style={{ marginTop: "12px" }}
+            >
+              Statistics generated:{" "}
+              {new Date(
+                summary.generatedAtUtc,
+              ).toLocaleString()}
+            </p>
+          )}
+        </>
+      )}
 
       <div className="dashboard-grid">
         <section className="panel">
@@ -259,8 +479,10 @@ function DashboardContent({
                         {product.sku}
                       </div>
                     </td>
+
                     <td>{product.category}</td>
                     <td>{product.stock}</td>
+
                     <td>
                       <span
                         className={`status ${product.statusClass}`}
@@ -297,13 +519,16 @@ function DashboardContent({
                   className="activity-dot"
                   aria-hidden="true"
                 />
+
                 <div>
                   <div className="activity-title">
                     {activity.title}
                   </div>
+
                   <div className="activity-description">
                     {activity.description}
                   </div>
+
                   <div className="activity-time">
                     {activity.time}
                   </div>
@@ -725,11 +950,10 @@ export default function Home() {
               </strong>
 
               <p>
-                Authentication is connected to the
-                backend. Inventory modules currently
-                display demonstration data while
-                their API integrations are being
-                developed.
+                Authentication, Products and Categories
+                are connected to the backend. Dashboard
+                statistics are live for management roles;
+                other modules are being developed.
               </p>
             </div>
           )}
@@ -763,11 +987,17 @@ export default function Home() {
               opacity: isLoggingOut ? 0.6 : 1,
             }}
           >
-            <span className="nav-icon" aria-hidden="true">
+            <span
+              className="nav-icon"
+              aria-hidden="true"
+            >
               <LogOut size={18} strokeWidth={1.8} />
             </span>
+
             <span className="nav-label">
-              {isLoggingOut ? "Signing out..." : "Logout"}
+              {isLoggingOut
+                ? "Signing out..."
+                : "Logout"}
             </span>
           </button>
         </div>
@@ -787,9 +1017,9 @@ export default function Home() {
                   ? "Expand sidebar"
                   : "Collapse sidebar"
               }
-              >
-                <Menu size={20} />
-              </button>
+            >
+              <Menu size={20} />
+            </button>
 
             <div className="breadcrumb">
               Workspace /{" "}
@@ -813,7 +1043,9 @@ export default function Home() {
                   : "Switch to dark mode"
               }
             >
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+              {darkMode
+                ? <Sun size={20} />
+                : <Moon size={20} />}
             </button>
 
             <div className="profile-details">
@@ -840,6 +1072,7 @@ export default function Home() {
           {selectedModule === "Dashboard" ? (
             <DashboardContent
               onNavigate={handleModuleSelection}
+              userRoles={userRoles}
             />
           ) : selectedModule === "Products" ? (
             <ProductsView />
@@ -868,7 +1101,10 @@ export default function Home() {
                   className="empty-module-icon"
                   aria-hidden="true"
                 >
-                  <Circle size={32} strokeWidth={1.5} />
+                  <Circle
+                    size={32}
+                    strokeWidth={1.5}
+                  />
                 </div>
 
                 <h2>{selectedModule}</h2>
