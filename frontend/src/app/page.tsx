@@ -1,8 +1,30 @@
-﻿
+
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  ArrowRight,
+  Boxes,
+  ChartColumn,
+  Circle,
+  ClipboardList,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Moon,
+  Package,
+  PackageCheck,
+  Settings,
+  ShoppingCart,
+  Store,
+  Sun,
+  Tags,
+  TriangleAlert,
+  Truck,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 import ProductsView from "@/components/products/products-view";
 import CategoriesView from "@/components/categories/categories-view";
 import {
@@ -14,7 +36,7 @@ type ModuleKey = ModuleName;
 
 type NavigationItem = {
   label: ModuleKey;
-  icon: string;
+  icon: LucideIcon;
 };
 
 type CurrentUser = {
@@ -33,45 +55,45 @@ type AuthenticationState =
   | "signed-out";
 
 const mainNavigation: NavigationItem[] = [
-  { label: "Dashboard", icon: "â—«" },
-  { label: "Products", icon: "â–£" },
-  { label: "Categories", icon: "â–¦" },
-  { label: "Inventory", icon: "â–¤" },
-  { label: "Stores", icon: "âŒ‚" },
-  { label: "Suppliers", icon: "â—‡" },
-  { label: "Purchase Orders", icon: "â–§" },
-  { label: "Stock Receipts", icon: "â‡©" },
+  { label: "Dashboard", icon: LayoutDashboard },
+  { label: "Products", icon: Package },
+  { label: "Categories", icon: Tags },
+  { label: "Inventory", icon: Boxes },
+  { label: "Stores", icon: Store },
+  { label: "Suppliers", icon: Truck },
+  { label: "Purchase Orders", icon: ShoppingCart },
+  { label: "Stock Receipts", icon: PackageCheck },
 ];
 
 const managementNavigation: NavigationItem[] = [
-  { label: "Reports", icon: "â–¥" },
-  { label: "Users", icon: "â™Ÿ" },
-  { label: "Settings", icon: "âš™" },
+  { label: "Reports", icon: ChartColumn },
+  { label: "Users", icon: Users },
+  { label: "Settings", icon: Settings },
 ];
 
 const stats = [
   {
     label: "Total Products",
     value: "1,248",
-    icon: "â–£",
+    icon: Package,
     detail: "Sample product count",
   },
   {
     label: "Inventory Units",
     value: "24,580",
-    icon: "â–¤",
+    icon: Boxes,
     detail: "Sample stock quantity",
   },
   {
     label: "Low Stock Items",
     value: "18",
-    icon: "!",
+    icon: TriangleAlert,
     detail: "Sample low-stock count",
   },
   {
     label: "Purchase Orders",
     value: "42",
-    icon: "â–§",
+    icon: ClipboardList,
     detail: "Sample order count",
   },
 ];
@@ -149,7 +171,7 @@ function NavigationButton({
       aria-current={active ? "page" : undefined}
     >
       <span className="nav-icon" aria-hidden="true">
-        {item.icon}
+        <item.icon size={18} strokeWidth={1.8} />
       </span>
       <span className="nav-label">{item.label}</span>
     </button>
@@ -177,7 +199,7 @@ function DashboardContent({
           className="primary-button"
           onClick={() => onNavigate("Products")}
         >
-          View Products â†’
+          View Products <ArrowRight size={16} aria-hidden="true" />
         </button>
       </div>
 
@@ -194,7 +216,7 @@ function DashboardContent({
             <div className="stat-top">
               <span className="stat-label">{stat.label}</span>
               <span className="stat-icon" aria-hidden="true">
-                {stat.icon}
+                <stat.icon size={20} strokeWidth={1.8} />
               </span>
             </div>
             <div className="stat-value">{stat.value}</div>
@@ -742,9 +764,8 @@ export default function Home() {
             }}
           >
             <span className="nav-icon" aria-hidden="true">
-              â‡¥
+              <LogOut size={18} strokeWidth={1.8} />
             </span>
-
             <span className="nav-label">
               {isLoggingOut ? "Signing out..." : "Logout"}
             </span>
@@ -766,10 +787,9 @@ export default function Home() {
                   ? "Expand sidebar"
                   : "Collapse sidebar"
               }
-              title="Toggle sidebar"
-            >
-              â˜°
-            </button>
+              >
+                <Menu size={20} />
+              </button>
 
             <div className="breadcrumb">
               Workspace /{" "}
@@ -793,7 +813,7 @@ export default function Home() {
                   : "Switch to dark mode"
               }
             >
-              {darkMode ? "â˜€" : "â˜¾"}
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
 
             <div className="profile-details">
@@ -848,7 +868,7 @@ export default function Home() {
                   className="empty-module-icon"
                   aria-hidden="true"
                 >
-                  â—ˆ
+                  <Circle size={32} strokeWidth={1.5} />
                 </div>
 
                 <h2>{selectedModule}</h2>
