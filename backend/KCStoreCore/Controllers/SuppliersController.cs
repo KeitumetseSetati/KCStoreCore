@@ -1,4 +1,4 @@
-﻿using KCStoreCore.Application.DTOs.Suppliers;
+using KCStoreCore.Application.DTOs.Suppliers;
 using KCStoreCore.Application.Interfaces;
 using KCStoreCore.Application.Security;
 using Microsoft.AspNetCore.Authorization;
@@ -24,11 +24,14 @@ public class SuppliersController : ControllerBase
     // =====================================================
 
     // GET: api/suppliers
+    // GET: api/suppliers?includeInactive=true
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<SupplierResponse>>> GetAll(
-        CancellationToken cancellationToken)
+        [FromQuery] bool includeInactive = false,
+        CancellationToken cancellationToken = default)
     {
         var suppliers = await _supplierService.GetAllAsync(
+            includeInactive,
             cancellationToken);
 
         return Ok(suppliers);

@@ -1,4 +1,4 @@
-﻿using KCStoreCore.Application.DTOs.Suppliers;
+using KCStoreCore.Application.DTOs.Suppliers;
 using KCStoreCore.Application.Interfaces;
 using KCStoreCore.Domain.Entities;
 using KCStoreCore.Infrastructure.Persistence;
@@ -16,11 +16,17 @@ public class SupplierService : ISupplierService
     }
 
     public async Task<IReadOnlyList<SupplierResponse>> GetAllAsync(
+        bool includeInactive = false,
         CancellationToken cancellationToken = default)
     {
-        return await _context.Suppliers
-            .AsNoTracking()
-            .Where(supplier => supplier.IsActive)
+        var query = _context.Suppliers.AsNoTracking();
+
+        if (!includeInactive)
+        {
+            query = query.Where(supplier => supplier.IsActive);
+        }
+
+        return await query
             .OrderBy(supplier => supplier.Name)
             .Select(supplier => new SupplierResponse
             {

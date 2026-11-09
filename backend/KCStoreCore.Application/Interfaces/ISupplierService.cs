@@ -1,10 +1,11 @@
-﻿using KCStoreCore.Application.DTOs.Suppliers;
+using KCStoreCore.Application.DTOs.Suppliers;
 
 namespace KCStoreCore.Application.Interfaces;
 
 public interface ISupplierService
 {
     Task<IReadOnlyList<SupplierResponse>> GetAllAsync(
+        bool includeInactive = false,
         CancellationToken cancellationToken = default);
 
     Task<SupplierResponse?> GetByIdAsync(

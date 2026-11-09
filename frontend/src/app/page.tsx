@@ -28,6 +28,7 @@ import {
 import ProductsView from "@/components/products/products-view";
 import CategoriesView from "@/components/categories/categories-view";
 import StoresView from "@/components/stores/stores-view";
+import SuppliersView from "@/components/suppliers/suppliers-view";
 import {
   canAccessModule,
   canManageInventory,
@@ -1081,6 +1082,8 @@ export default function Home() {
             <CategoriesView />
           ) : selectedModule === "Stores" ? (
             <StoresView />
+          ) : selectedModule === "Suppliers" ? (
+            <SuppliersView />
           ) : (
             <>
               <div className="page-heading">
