@@ -550,7 +550,7 @@ export default function Home() {
     useState<ModuleKey>("Dashboard");
 
   const [collapsed, setCollapsed] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
 
   const [currentUser, setCurrentUser] =
     useState<CurrentUser | null>(null);

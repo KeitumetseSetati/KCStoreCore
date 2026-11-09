@@ -85,6 +85,32 @@ input:focus-visible {
   width: 82px;
 }
 
+.sidebar.collapsed .brand-details,
+.sidebar.collapsed .nav-heading,
+.sidebar.collapsed .nav-label,
+.sidebar.collapsed .sidebar-note {
+  display: none;
+}
+
+.sidebar.collapsed .brand {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  gap: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.sidebar.collapsed .nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .brand {
   display: flex;
   align-items: center;
