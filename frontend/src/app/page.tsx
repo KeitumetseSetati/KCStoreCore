@@ -1,4 +1,4 @@
-﻿
+
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import ProductsView from "@/components/products/products-view";
 import CategoriesView from "@/components/categories/categories-view";
+import StoresView from "@/components/stores/stores-view";
 import {
   canAccessModule,
   canManageInventory,
@@ -950,7 +951,7 @@ export default function Home() {
               </strong>
 
               <p>
-                Authentication, Products and Categories
+                Authentication, Products, Categories and Stores
                 are connected to the backend. Dashboard
                 statistics are live for management roles;
                 other modules are being developed.
@@ -1078,6 +1079,8 @@ export default function Home() {
             <ProductsView />
           ) : selectedModule === "Categories" ? (
             <CategoriesView />
+          ) : selectedModule === "Stores" ? (
+            <StoresView />
           ) : (
             <>
               <div className="page-heading">
